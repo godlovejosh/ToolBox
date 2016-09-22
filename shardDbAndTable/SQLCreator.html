@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SQLCreator</title>
+    <link rel="stylesheet" href="http://www.pamirs.top/js/plugins/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+
+<form id="form1" class="form-horizontal">
+    <table class="table table-striped">
+        <caption>分库</caption>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">数据库名</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control dbName" placeholder="数据库名" value=""/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">数据库字符集</label>
+            </td>
+            <td class="col-sm-10">
+                <select class="chartset">
+                    <option value="utf8">utf8</option>
+                    <option value="gbk">gbk</option>
+                </select>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">分库个数</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control dbCount" placeholder="分库个数" value=""/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">后缀起始值</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control dbsuffix" value="0000"/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-2">
+            </td>
+            <td>
+                <input type="button" id="generator1" class="btn btn-primary btn-sm" value="生成"/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">createResult</label>
+            </td>
+            <td class="col-sm-10">
+                <textarea class="form-control createResult" rows="5" placeholder="result"></textarea>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">dropResult</label>
+            </td>
+            <td class="col-sm-10">
+                <textarea class="form-control dropResult" rows="5" placeholder="result"></textarea>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<hr/>
+
+<form id="form2" class="form-horizontal">
+    <table class="table table-striped">
+        <caption>分表4</caption>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">数据库名</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control dbName" placeholder="数据库名" value=""/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">分库个数</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control dbCount" placeholder="分库个数" value=""/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">库后缀</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control dbsuffix" value="0000"/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">表名</label>
+            </td>
+            <td class="col-sm-10">
+                <select class="tbName">
+                    <option value="">ac_account_balance</option>
+                    <option value="">ac_account_book</option>
+                    <option value="">ac_accounting_entry</option>
+                </select>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">分表个数</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control tbCount" placeholder="分表个数" value=""/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">表后缀</label>
+            </td>
+            <td class="col-sm-10">
+                <input type="text" class="form-control tbsuffix" value="0000"/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-2">
+            </td>
+            <td>
+                <input type="button" id="generator2" class="btn btn-primary btn-sm" value="生成"/>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">createResult</label>
+            </td>
+            <td class="col-sm-10">
+                <textarea class="form-control createResult" rows="20" placeholder="result"></textarea>
+            </td>
+        </tr>
+        <tr class='row form-group'>
+            <td class="col-sm-1">
+                <label class="control-label">dropResult</label>
+            </td>
+            <td class="col-sm-10">
+                <textarea class="form-control dropResult" rows="10" placeholder="result"></textarea>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script>
+    $("#generator1").on("click", function () {
+        var dbName = $("#form1 .dbName").val().trim();
+        var chartset = $("#form1 .chartset").find("option:selected").text().trim();
+        var dbCount = $("#form1 .dbCount").val().trim();
+        var dbsuffix = $("#form1 .dbsuffix").val().trim();
+        var createResult = generateUnKnownDatabaseFactory(dbName, chartset, dbCount, dbsuffix);
+        var dropResult = dropUnKnownDatabaseFactory(dbName, chartset, dbCount, dbsuffix);
+        $("#form1 .createResult").val(createResult.join(" "));
+        $("#form1 .dropResult").val(dropResult.join(" "));
+    });
+
+    $("#generator2").on("click", function () {
+        var dbName = $("#form2 .dbName").val().trim();
+        var dbCount = $("#form2 .dbCount").val().trim();
+        var dbsuffix = $("#form2 .dbsuffix").val().trim();
+        var tbName = $("#form2 .tbName").find("option:selected").text().trim();
+        var tbCount = $("#form2 .tbCount").val().trim();
+        var tbsuffix = $("#form2 .tbsuffix").val().trim();
+        var createResult = generateKnownTableFactory(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        var dropResult = dropKnownTableFactory(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        $("#form2 .createResult").val(createResult.join(" "));
+        $("#form2 .dropResult").val(dropResult.join(" "));
+    });
+
+    function generateUnKnownDatabaseFactory(dbName, chartset, dbCount, dbsuffix) {
+        var result = new Array();
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        var collate = chartset == "gbk" ? "gbk_chinese_ci" : "utf8_general_ci";
+        for (var i = 0; i < dbNames.length; i++) {
+            var createDatabase = "CREATE DATABASE IF NOT EXISTS " + dbNames[i] + " DEFAULT CHARACTER SET " + chartset + " COLLATE " + collate + ";";
+            result.push(createDatabase);
+        }
+        return result;
+    }
+
+    function dropUnKnownDatabaseFactory(dbName, chartset, dbCount, dbsuffix) {
+        var result = new Array();
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        for (var i = 0; i < dbNames.length; i++) {
+            var dropDatabase = "DROP DATABASE " + dbNames[i] + ";";
+            result.push(dropDatabase);
+        }
+        return result;
+    }
+
+    function generateKnownTableFactory(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var result = new Array();
+        if (tbName == "ac_account_balance") {
+            result = ac_account_balance(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        } else if (tbName == "ac_account_book") {
+            result = ac_account_book(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        } else if (tbName == "ac_accounting_entry") {
+            result = ac_accounting_entry(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        }
+        return result;
+    }
+
+    function dropKnownTableFactory(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var result = new Array();
+        if (tbName == "ac_account_balance") {
+            result = drop_ac_account_balance(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        } else if (tbName == "ac_account_book") {
+            result = drop_ac_account_book(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        } else if (tbName == "ac_accounting_entry") {
+            result = drop_ac_accounting_entry(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix);
+        }
+        return result;
+    }
+
+    function ac_account_balance(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        var result = new Array();
+        for (var i = 0; i < dbNames.length; i++) {
+            var tbNames = createTableNames(tbName, tbCount, tbsuffix, i);
+            for (var j = 0; j < tbNames.length; j++) {
+                var dropTable = "DROP TABLE IF EXISTS `" + dbNames[i] + "`.`" + tbNames[j] + "`;";
+                var createTable = "CREATE TABLE `" + dbNames[i] + "`.`" + tbNames[j] + "` ("
+                        + "`id` bigint(20) NOT NULL AUTO_INCREMENT,"
+                        + "`acc_id` bigint(20) DEFAULT '0' COMMENT '账号',"
+                        + "`book_id` bigint(20) DEFAULT '0' COMMENT '账本ID',"
+                        + "`total` bigint(20) DEFAULT '0' COMMENT '当前发生金额',"
+                        + "`balance` bigint(20) DEFAULT '0' COMMENT '可用余额',"
+                        + "`lock_blc` bigint(20) DEFAULT '0' COMMENT '冻结余额',"
+                        + "`subject` varchar(20) DEFAULT '0' COMMENT '账本科目 现金，专款，赠送预存',"
+                        + "`direct` tinyint(4) DEFAULT '0' COMMENT '记账方向，借或贷、冻',"
+                        + "`remark` varchar(200) DEFAULT NULL COMMENT '科目备注：购物、充值、结算',"
+                        + "`biz_code` varchar(20) DEFAULT '0' COMMENT '业务代码',"
+                        + "`status` tinyint(4) DEFAULT '0' COMMENT '0: 默认有效   -1 删除 ',"
+                        + "`acc_time` datetime DEFAULT NULL COMMENT '记账时间',"
+                        + "`out_id` varchar(100) DEFAULT '0' COMMENT '外部交易资金流水NO 【必须保证唯一：类型_单据号，字母_数字】',"
+                        + "`cdate` datetime DEFAULT NULL,"
+                        + "`edate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
+                        + "`service_code` varchar(50) DEFAULT NULL,"
+                        + "`service_name` varchar(50) DEFAULT NULL,"
+                        + "`product_code` varchar(50) DEFAULT NULL,"
+                        + "`product_name` varchar(50) DEFAULT NULL,"
+                        + "PRIMARY KEY (`id`),"
+                        + "UNIQUE KEY `id` (`id`),"
+                        + "KEY `acc_id` (`acc_id`),"
+                        + "KEY `book_id` (`book_id`),"
+                        + "KEY `status` (`status`,`cdate`) USING BTREE,"
+                        + "KEY `edate` (`edate`) USING BTREE,"
+                        + "KEY `subject_acc_id` (`subject`,`acc_id`)"
+                        + ") ENGINE=InnoDB AUTO_INCREMENT=2570 DEFAULT CHARSET=utf8 COMMENT='账户账本明细';";
+                result.push(dropTable + createTable);
+            }
+        }
+        return result;
+    }
+
+    function drop_ac_account_balance(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        var result = new Array();
+        for (var i = 0; i < dbNames.length; i++) {
+            var tbNames = createTableNames(tbName, tbCount, tbsuffix, i);
+            for (var j = 0; j < tbNames.length; j++) {
+                var dropTable = "DROP TABLE IF EXISTS `" + dbNames[i] + "`.`" + tbNames[j] + "`;";
+                result.push(dropTable);
+            }
+        }
+        return result;
+    }
+
+    function ac_account_book(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        var result = new Array();
+        for (var i = 0; i < dbNames.length; i++) {
+            var tbNames = createTableNames(tbName, tbCount, tbsuffix, i);
+            for (var j = 0; j < tbNames.length; j++) {
+                var dropTable = "DROP TABLE IF EXISTS `" + dbNames[i] + "`.`" + tbNames[j] + "`;";
+                var createTable = "CREATE TABLE `" + dbNames[i] + "`.`" + tbNames[j] + "` ("
+                        + "`id` bigint(20) NOT NULL AUTO_INCREMENT,"
+                        + "`uid` bigint(20) DEFAULT '0',"
+                        + "`acc_id` bigint(20) DEFAULT '0' COMMENT '账户',"
+                        + "`balance` bigint(20) DEFAULT '0' COMMENT '可用余额',"
+                        + "`lock_blc` bigint(20) DEFAULT '0' COMMENT '冻结余额',"
+                        + "`total_blc` bigint(20) DEFAULT '0' COMMENT '总余额',"
+                        + "`subject` varchar(20) DEFAULT '0' COMMENT '账本科目 现金，专款，赠送预存',"
+                        + "`direct` tinyint(4) DEFAULT '0' COMMENT '记账方向，借或贷',"
+                        + "`cycle` int(11) DEFAULT '0' COMMENT '出账周期,年，半年、季度、月、旬、周、日',"
+                        + "`cycle_time` int(11) DEFAULT '0' COMMENT '周期时间，如每月15号，每周一',"
+                        + "`rule` varchar(500) DEFAULT NULL COMMENT '规则，如限额，专款专用',"
+                        + "`rule_blc` varchar(100) DEFAULT NULL,"
+                        + "`acc_time` datetime DEFAULT NULL COMMENT '科目记账时间',"
+                        + "`start_time` datetime DEFAULT NULL COMMENT '账本生效时间',"
+                        + "`end_time` datetime DEFAULT NULL COMMENT '账本失效时间',"
+                        + "`parent_id` int(11) DEFAULT '0' COMMENT '父账本科目ID',"
+                        + "`status` tinyint(4) NOT NULL COMMENT '0: 默认有效 1正常 2失效 3 冻结 4测试账号',"
+                        + "`cdate` datetime DEFAULT NULL,"
+                        + "`edate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
+                        + "`attribute` bigint(20) DEFAULT '0' COMMENT '账本属性',"
+                        + "PRIMARY KEY (`id`),"
+                        + "KEY `uid` (`uid`),"
+                        + "KEY `acc_id` (`acc_id`),"
+                        + "KEY `status` (`status`,`cdate`) USING BTREE,"
+                        + "KEY `edate` (`edate`) USING BTREE"
+                        + ") ENGINE=InnoDB AUTO_INCREMENT=176121 DEFAULT CHARSET=utf8 COMMENT='账户账本';";
+                result.push(dropTable + createTable);
+            }
+        }
+        return result;
+    }
+
+    function drop_ac_account_book(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        var result = new Array();
+        for (var i = 0; i < dbNames.length; i++) {
+            var tbNames = createTableNames(tbName, tbCount, tbsuffix, i);
+            for (var j = 0; j < tbNames.length; j++) {
+                var dropTable = "DROP TABLE IF EXISTS `" + dbNames[i] + "`.`" + tbNames[j] + "`;";
+                result.push(dropTable);
+            }
+        }
+        return result;
+    }
+
+    function ac_accounting_entry(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        var result = new Array();
+        for (var i = 0; i < dbNames.length; i++) {
+            var tbNames = createTableNames(tbName, tbCount, tbsuffix, i);
+            for (var j = 0; j < tbNames.length; j++) {
+                var dropTable = "DROP TABLE IF EXISTS `" + dbNames[i] + "`.`" + tbNames[j] + "`;";
+                var createTable = "CREATE TABLE `" + dbNames[i] + "`.`" + tbNames[j] + "` ("
+                        + "`id` bigint(20) NOT NULL AUTO_INCREMENT,"
+                        + "`uid` bigint(20) DEFAULT '0',"
+                        + "`acc_id` bigint(20) DEFAULT '0' COMMENT '账号',"
+                        + "`total` bigint(20) DEFAULT '0' COMMENT '当前发生金额',"
+                        + "`subject` varchar(20) DEFAULT '0' COMMENT '科目 资产1开头，负债2开头 共同类4',"
+                        + "`biz_code` varchar(20) DEFAULT '0' COMMENT '业务代码',"
+                        + "`direct` tinyint(4) DEFAULT '0' COMMENT '记账方向，借或贷',"
+                        + "`status` tinyint(4) DEFAULT '0' COMMENT '0: 默认有效   -1 删除 ',"
+                        + "`acc_time` datetime DEFAULT NULL COMMENT '记账时间',"
+                        + "`entry_no` varchar(50) DEFAULT NULL,"
+                        + "`out_id` varchar(100) DEFAULT '0' COMMENT '外部交易ID 如交易ID',"
+                        + "`cdate` datetime DEFAULT NULL,"
+                        + "`edate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
+                        + "`service_code` varchar(50) DEFAULT NULL,"
+                        + "`service_name` varchar(50) DEFAULT NULL,"
+                        + "`product_code` varchar(50) DEFAULT NULL,"
+                        + "`product_name` varchar(50) DEFAULT NULL,"
+                        + "PRIMARY KEY (`id`),"
+                        + "KEY `uid` (`uid`),"
+                        + "KEY `acc_id` (`acc_id`),"
+                        + "KEY `acc_time` (`acc_time`),"
+                        + "KEY `cdate` (`cdate`,`status`) USING BTREE,"
+                        + "KEY `edate` (`edate`) USING BTREE,"
+                        + "KEY `out_id` (`out_id`) USING BTREE"
+                        + ") ENGINE=InnoDB AUTO_INCREMENT=2614 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;";
+                result.push(dropTable + createTable);
+            }
+        }
+        return result;
+    }
+
+    function drop_ac_accounting_entry(dbName, dbCount, dbsuffix, tbName, tbCount, tbsuffix) {
+        var dbNames = createDatabaseNames(dbName, dbCount, dbsuffix);
+        var result = new Array();
+        for (var i = 0; i < dbNames.length; i++) {
+            var tbNames = createTableNames(tbName, tbCount, tbsuffix, i);
+            for (var j = 0; j < tbNames.length; j++) {
+                var dropTable = "DROP TABLE IF EXISTS `" + dbNames[i] + "`.`" + tbNames[j] + "`;";
+                result.push(dropTable);
+            }
+        }
+        return result;
+    }
+
+    // 创建表名称的数组集合
+    function createTableNames(name, count, suffix, dbNo) {
+        var names = new Array();
+        var suffixValue = parseInt(suffix);
+        var baseValue = count * dbNo + suffixValue; // 每个库中的表基数不同
+        for (var i = 0; i < count; i++) {
+            if (baseValue.toString().length > suffix.length) {
+                break;
+            }
+            names[i] = name + "_" + pad(suffix, baseValue);
+            baseValue++;
+        }
+        return names;
+    }
+
+    // 创建数据库名称的数组集合
+    function createDatabaseNames(name, count, suffix) {
+        var names = new Array();
+        var baseValue = parseInt(suffix);
+        for (var i = 0; i < count; i++) {
+            if (baseValue.toString().length > suffix.length) {
+                break;
+            }
+            names[i] = name + "_" + pad(suffix, baseValue);
+            baseValue++;
+        }
+        return names;
+    }
+
+    /**
+     * 补零
+     * @param suffix    string
+     * @param baseValue  int
+     * @returns {*}
+     */
+    function pad(suffix, baseValue) {
+        var suffixLength = suffix.length;
+        var valueLength = baseValue.toString().length;
+        while (suffixLength > valueLength) {
+            baseValue = "0" + baseValue;
+            valueLength++;
+        }
+        return baseValue;
+    }
+</script>
+</body>
+</html>
